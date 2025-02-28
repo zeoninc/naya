@@ -1,13 +1,23 @@
-from transformers import pipeline
+import requests
+import json
 
-# Load model (use distilgpt2 for now, swap with Llama-2-7b-hf later)
-generator = pipeline("text-generation", model="distilgpt2")
+# Ollama local API endpoint
+OLLAMA_API_URL = "http://localhost:11434/api/generate"
 
-def get_naya_response(user_input):
-    prompt = f"You are Naya, an AI healthcare assistant designed to provide helpful and accurate information with a friendly, professional tone. User query: {user_input}"
-    response = generator(prompt, max_length=100, num_return_sequences=1)[0]["generated_text"]
-    return f"Naya: {response.split('User query:')[1].strip()}"
+# Function to call Ollama's LLaMA 3.2 model
+def get_naya_response(prompt):
+    payload = {
+        "model": "llama3.2",  # Your local LLaMA 3.2 model name in Ollama
+        "prompt": prompt,
+        "max_tokens": 50,     # Equivalent to max_length in Transformers
+        "stream": False       # Get full response, not streamed
+    }
+    response = requests.post(OLLAMA_API_URL, json=payload)
+    if response.status_code == 200:
+        result = response.json()
+        return result["response"].strip()
+    else:
+        return f"Error: API call failed (Status: {response.status_code})"
 
 # Test it
-user_input = "What can you tell me about diabetes?"
-print(get_naya_response(user_input))
+print(get_naya_response("Hello, I am Naya"))
