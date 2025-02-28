@@ -1,0 +1,22 @@
+# Ignore virtual environment
+naya_env/
+
+# Ignore large model files and caches
+*.bin
+*.pth
+*.safetensors
+*.pt
+__pycache__/
+*.cache
+transformers_cache/
+huggingface/
+
+# Ignore datasets or other large files
+*.csv
+*.json
+*.parquet
+*.zip
+
+# Ignore logs or temp files
+*.log
+*.tmp
